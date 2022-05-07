@@ -11,3 +11,9 @@ class Money:
 
     def __eq__(self, other: object) -> bool:
         return self.amount == other.amount and self.currency == other.currency
+
+    def __str__(self) -> str:
+        return f'{self.amount} {self.currency}'
+
+    def __repr__(self) -> str:
+        return f'Money({self.amount}, {self.currency})'
