@@ -9,20 +9,14 @@ class Portfolio:
     def add(self, *moneys):
         self.moneys.extend(moneys)
 
-    def __convert(self, money, currency):
-        exchangeRates = {'EUR->USD': 1.2, 'USD->KRW': 1100}
-        if money.currency == currency:
-            return money.amount
-        key = money.currency + '->' + currency
-        return money.amount * exchangeRates[key]
-
-    def evaluate(self, currency):
+    def evaluate(self, bank, currency):
         total = 0.0
         failures = []
         for m in self.moneys:
             try:
-                total += self.__convert(m, currency)
-            except KeyError as ke:
+                convertedMoney = bank.convert(m, currency)
+                total += convertedMoney.amount
+            except Exception as ke:
                 failures.append(ke)
 
         if not failures:
