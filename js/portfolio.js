@@ -18,14 +18,27 @@ class Portfolio{
             return money.amount
         }
         let key = money.currency + '->' + currency;
-        return money.amount * exchageRates.get(key);
+        let rate = exchageRates.get(key)
+        if (rate === undefined){
+            return undefined
+        }
+        return money.amount * rate;
     }
 
     evaluate(currency){
+        let failures = [];
         let total = this.moneys.reduce( (sum, money) => {
-            return sum + this.convert(money, currency);
+            let convertedAmount = this.convert(money, currency)
+            if (convertedAmount === undefined){
+                failures.push(money.currency + '->' + currency)
+            } else {
+                return sum + convertedAmount
+            }
         }, 0)
-        return new Money(total, currency)
+        if (!failures.length) {
+            return new Money(total, currency)
+        }
+        throw new Error("Missing exchange rate(s):[" + failures.join() + "]");
     }
 }
 
